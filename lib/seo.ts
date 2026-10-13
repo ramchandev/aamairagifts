@@ -1,5 +1,6 @@
 import { listProducts } from "@/lib/cofolo";
 import { CONTACT_EMAIL, WHATSAPP_NUMBER } from "@/lib/site";
+import type { Metadata } from "next";
 import type { Product } from "@/lib/types";
 
 const FALLBACK_SITE_URL = "https://www.aamairagifts.com";
@@ -18,8 +19,78 @@ export function absoluteUrl(path = "/") {
 }
 
 export const SITE_NAME = "Aamaira Gifts";
+export const HOME_TITLE = "Return Gifts for Every Celebration — Aamaira Gifts";
 export const SITE_DESCRIPTION =
-  "Return gifts from Coimbatore for housewarmings, weddings, Golu, baby showers and corporate events. Choose gifts, request a quote, and track the order on this website.";
+  "Return gifts from Coimbatore for weddings, housewarmings, Golu, baby showers and corporate events. Request a quote and track the order here.";
+
+export function metaText(value: string, max = 155) {
+  const clean = value.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > 80 ? cut.slice(0, space) : cut).replace(/[.,;:\s]+$/, "")}…`;
+}
+
+export function pageMeta({
+  title,
+  description,
+  path,
+  index = true,
+  follow = true,
+  absolute = false,
+  image,
+  imageAlt,
+}: {
+  title: string;
+  description: string;
+  path?: string;
+  index?: boolean;
+  follow?: boolean;
+  absolute?: boolean;
+  image?: string;
+  imageAlt?: string;
+}): Metadata {
+  const branded = absolute ? title : `${title} — ${SITE_NAME}`;
+  const text = metaText(description);
+  return {
+    title: absolute ? { absolute: title } : title,
+    description: text,
+    alternates: path ? { canonical: path } : undefined,
+    robots: {
+      index,
+      follow,
+      googleBot: index
+        ? { index: true, follow, "max-image-preview": "large" as const, "max-snippet": -1, "max-video-preview": -1 }
+        : { index: false, follow },
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_IN",
+      siteName: SITE_NAME,
+      title: branded,
+      description: text,
+      url: path,
+      images: image ? [{ url: image, alt: imageAlt || branded }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: branded,
+      description: text,
+    },
+  };
+}
+
+export function categoryDescription(name: string, count?: number) {
+  const stock = count ? `${count} designs` : "designs";
+  return `${name} return gifts from Aamaira Gifts in Coimbatore. Browse ${stock} for weddings, housewarmings, Golu and other celebrations. Price on request.`;
+}
+
+export function productMetaDescription(product: Product) {
+  const unit = product.minQuantity === 1 ? product.unit : product.unit === "piece" ? "pieces" : product.unit;
+  const lead = (product.summary || product.description || "").replace(/\s+/g, " ").trim();
+  const sentence = lead ? (/[.!?]$/.test(lead) ? lead : `${lead}.`) : "";
+  return [sentence, `${product.name} return gift from Aamaira Gifts in Coimbatore.`, `Minimum ${product.minQuantity} ${unit}.`, "Price on request."].filter(Boolean).join(" ");
+}
 
 export const FAQS = [
   {

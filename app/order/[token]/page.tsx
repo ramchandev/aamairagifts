@@ -4,12 +4,14 @@ import { Suspense } from "react";
 import { OrderView } from "@/components/order-view";
 import { TrackForm } from "@/components/track-form";
 import { CofoloError, trackOrder } from "@/lib/cofolo";
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Your order",
-  robots: { index: false, follow: false },
-};
+  description: "Order status, gifts, price, payment details and courier updates from Aamaira Gifts.",
+  index: false,
+  follow: false,
+});
 
 export default function OrderTokenPage({
   params,

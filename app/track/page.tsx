@@ -5,17 +5,17 @@ import { TrackForm } from "@/components/track-form";
 import { CofoloError } from "@/lib/cofolo";
 import { phoneDigits } from "@/lib/order-index";
 import { ordersForPhone } from "@/lib/orders-by-phone";
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export async function generateMetadata({ searchParams }: { searchParams: Promise<{ phone?: string }> }): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ phone?: string }> }) {
   const { phone = "" } = await searchParams;
-  const lookup = phone.trim().length > 0;
-  return {
+  return pageMeta({
     title: "Track an order",
-    description: "Look up Aamaira Gifts orders with the phone number used to place them.",
-    alternates: { canonical: "/track" },
-    robots: lookup ? { index: false, follow: false } : { index: true, follow: true },
-  };
+    description: "Look up an Aamaira Gifts order with the phone number used on the quote. See the gifts, price, payment details and courier updates.",
+    path: "/track",
+    index: phone.trim().length === 0,
+    follow: phone.trim().length === 0,
+  });
 }
 
 export default function TrackPage({ searchParams }: { searchParams: Promise<{ phone?: string }> }) {

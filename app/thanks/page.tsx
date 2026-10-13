@@ -2,12 +2,15 @@ import { connection } from "next/server";
 import Link from "next/link";
 import { Suspense } from "react";
 import { phoneDigits } from "@/lib/order-index";
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Quote sent",
-  robots: { index: false, follow: false },
-};
+  description: "Your Aamaira Gifts quote has been sent. Continue shopping or track the order with your phone number.",
+  path: "/thanks",
+  index: false,
+  follow: false,
+});
 
 export default function ThanksPage({ searchParams }: { searchParams: Promise<{ phone?: string; number?: string }> }) {
   return (

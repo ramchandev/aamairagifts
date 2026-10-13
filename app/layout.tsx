@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/json-ld";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { organizationLd, SITE_DESCRIPTION, siteUrl } from "@/lib/seo";
+import { HOME_TITLE, organizationLd, SITE_DESCRIPTION, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -20,7 +20,7 @@ const figtree = Figtree({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: "Aamaira Gifts — Return Gifts for Every Celebration",
+    default: HOME_TITLE,
     template: "%s — Aamaira Gifts",
   },
   description: SITE_DESCRIPTION,
@@ -34,12 +34,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     siteName: "Aamaira Gifts",
-    title: "Aamaira Gifts — Return Gifts for Every Celebration",
+    title: HOME_TITLE,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aamaira Gifts — Return Gifts for Every Celebration",
+    title: HOME_TITLE,
     description: SITE_DESCRIPTION,
   },
   robots: {
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={figtree.className} data-scroll-behavior="smooth">
+    <html lang="en-IN" className={figtree.className} data-scroll-behavior="smooth">
       <body>
         <JsonLd data={organizationLd()} />
         <Suspense fallback={null}>

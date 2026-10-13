@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { getCatalog } from "@/lib/cofolo";
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Page not found",
   description: "That page is not on Aamaira Gifts. Search the return gifts or go back to the shop.",
-  robots: { index: false, follow: true },
-};
+  index: false,
+});
 
 export default async function NotFound() {
   let categories: { id: string; name: string; slug: string }[] = [];

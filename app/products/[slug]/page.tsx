@@ -6,7 +6,7 @@ import { PriceTag, ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { JsonLd } from "@/components/json-ld";
 import { CofoloError, getProduct, listProducts } from "@/lib/cofolo";
-import { breadcrumbLd, productLd } from "@/lib/seo";
+import { breadcrumbLd, pageMeta, productLd, productMetaDescription } from "@/lib/seo";
 import { attr, isYes } from "@/lib/shop";
 import type { Metadata } from "next";
 import type { Product } from "@/lib/types";
@@ -15,22 +15,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   try {
     const product = await getProduct(slug);
-    const description =
-      product.summary ||
-      product.description ||
-      `${product.name} return gift from Aamaira Gifts in Coimbatore. Price on request. Minimum ${product.minQuantity} ${product.unit}.`;
     const image = product.images[0];
-    return {
+    return pageMeta({
       title: product.name,
-      description,
-      alternates: { canonical: `/products/${product.slug}` },
-      openGraph: {
-        title: product.name,
-        description,
-        url: `/products/${product.slug}`,
-        images: image ? [{ url: image.url, alt: image.alt || product.name }] : undefined,
-      },
-    };
+      description: productMetaDescription(product),
+      path: `/products/${product.slug}`,
+      image: image?.url,
+      imageAlt: image?.alt || product.name,
+    });
   } catch {
     return { title: "Gift" };
   }

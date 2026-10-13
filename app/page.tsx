@@ -9,7 +9,7 @@ import { WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { getCatalog, listProducts } from "@/lib/cofolo";
 import { loadShop } from "@/lib/load-shop";
-import { FAQS, faqLd } from "@/lib/seo";
+import { categoryDescription, FAQS, faqLd, HOME_TITLE, pageMeta, SITE_DESCRIPTION } from "@/lib/seo";
 import { attr, parseShopQuery, shopHref, toggleMaterial, type ShopQuery } from "@/lib/shop";
 import { whatsAppHref } from "@/lib/site";
 import type { Metadata } from "next";
@@ -23,17 +23,37 @@ export async function generateMetadata({
   const query = parseShopQuery(await searchParams);
   const filtered = Boolean(query.q || query.materials.length || query.personal || query.useful || query.sort !== "default" || query.page > 1);
   const canonical = query.category ? `/?category=${encodeURIComponent(query.category)}` : "/";
-  let title: string | undefined;
-  if (query.q) title = `Results for “${query.q}”`;
-  else if (query.category) {
-    const catalog = await getCatalog();
-    title = catalog.categories.find((category) => category.slug === query.category)?.name;
+  if (query.q) {
+    const term = query.q.slice(0, 60);
+    return pageMeta({
+      title: `Results for “${term}” — Aamaira Gifts`,
+      description: `Return gifts matching “${term}” at Aamaira Gifts in Coimbatore.`,
+      path: canonical,
+      absolute: true,
+      index: false,
+      follow: true,
+    });
   }
-  return {
-    title,
-    alternates: { canonical },
-    robots: filtered ? { index: false, follow: true } : { index: true, follow: true },
-  };
+  if (query.category) {
+    const catalog = await getCatalog();
+    const category = catalog.categories.find((item) => item.slug === query.category);
+    if (category) {
+      return pageMeta({
+        title: `${category.name} return gifts — Aamaira Gifts`,
+        description: categoryDescription(category.name, category.productCount),
+        path: canonical,
+        absolute: true,
+        index: !filtered,
+      });
+    }
+  }
+  return pageMeta({
+    title: HOME_TITLE,
+    description: SITE_DESCRIPTION,
+    path: "/",
+    absolute: true,
+    index: !filtered,
+  });
 }
 
 export default function Home({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
@@ -65,7 +85,7 @@ async function HomeShop({ searchParams }: { searchParams: Promise<Record<string,
             <div className="hero-txt">
               <span className="eyebrow">Return gifts, made simple</span>
               <h1>
-                Pick your gifts. Tell us how many.
+                {activeCategory ? `${activeCategory.name} return gifts` : "Return gifts for every celebration."}
                 <br />
                 <em>We&apos;ll send you the best price.</em>
               </h1>
