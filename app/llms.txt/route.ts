@@ -16,6 +16,7 @@ export async function GET() {
       (category) =>
         `- [${category.name}](${absoluteUrl(`/?category=${encodeURIComponent(category.slug)}`)}): ${category.productCount ?? 0} gifts.`,
     ),
+    `- [How it works](${absoluteUrl("/how-it-works")}): Choose gifts, send a quote, receive the price, pay, then track the order.`,
     `- [Track an order](${absoluteUrl("/track")}): Look up orders with the phone number used on the quote. Quote emails open a private order page on this site. Do not invent an order number, a token, or a price.`,
     "",
     "## Policies",

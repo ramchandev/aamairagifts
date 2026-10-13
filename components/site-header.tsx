@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart-provider";
-import { GiftIcon, SearchIcon, WhatsAppIcon } from "@/components/icons";
+import { GiftSearch } from "@/components/gift-search";
+import { GiftIcon, WhatsAppIcon } from "@/components/icons";
 import { whatsAppHref } from "@/lib/site";
 
 export function SiteHeader() {
@@ -31,16 +32,12 @@ export function SiteHeader() {
             <span>RETURN GIFTS</span>
           </span>
         </Link>
-        <form className="search" action="/" method="get" role="search">
-          <span className="sr-only">Search gifts</span>
-          {kept.flatMap((key) => params.getAll(key).map((value) => <input key={`${key}-${value}`} type="hidden" name={key} value={value} />))}
-          <input key={q} name="q" type="search" placeholder="Search diyas, dabbas, flasks, pouches…" defaultValue={q} autoComplete="off" />
-          <button type="submit" aria-label="Search">
-            <SearchIcon />
-          </button>
-        </form>
+        <GiftSearch
+          q={q}
+          hidden={kept.flatMap((key) => params.getAll(key).map((value) => <input key={`${key}-${value}`} type="hidden" name={key} value={value} />))}
+        />
         <div className="hdr-actions">
-          <Link className="hlink hide-sm" href="/#how">
+          <Link className="hlink hide-sm" href="/how-it-works">
             How it works
           </Link>
           <Link className="hlink hide-sm" href="/track">

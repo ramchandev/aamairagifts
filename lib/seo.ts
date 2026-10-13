@@ -96,7 +96,7 @@ export const FAQS = [
   {
     question: "How do I order return gifts from Aamaira?",
     answer:
-      "Add gifts to your list, set the guest count, and send a quote request with your name, WhatsApp number, email and pincode. We confirm the price on this website. You do not pay when you send the list.",
+      "Add gifts to your list, set the guest count, and send a quote request with your name, WhatsApp number, email and pincode. We confirm the price on this website. You do not pay when you send the list. The full steps are on the How it works page.",
   },
   {
     question: "What is the minimum order?",

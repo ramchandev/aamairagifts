@@ -36,7 +36,7 @@ export async function SiteFooter() {
             <h5>Help</h5>
             <ul>
               <li>
-                <Link href="/#how">How ordering works</Link>
+                <Link href="/how-it-works">How it works</Link>
               </li>
               <li>
                 <Link href="/track">Track an order</Link>

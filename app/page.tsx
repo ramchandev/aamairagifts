@@ -101,6 +101,9 @@ async function HomeShop({ searchParams }: { searchParams: Promise<Record<string,
                   <i>3</i>Get a quote on WhatsApp
                 </span>
               </div>
+              <Link className="how-jump" href="/how-it-works">
+                How it works
+              </Link>
             </div>
             <div className="hero-imgs">
               {heroPhotos.map((product) => (

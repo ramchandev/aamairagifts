@@ -7,6 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [catalog, products] = await Promise.all([getCatalog(), allProducts()]);
   const pages: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "daily", priority: 1 },
+    { url: absoluteUrl("/how-it-works"), changeFrequency: "monthly", priority: 0.6 },
     { url: absoluteUrl("/track"), changeFrequency: "monthly", priority: 0.4 },
     ...POLICIES.map((policy) => ({
       url: absoluteUrl(`/${policy.slug}`),
