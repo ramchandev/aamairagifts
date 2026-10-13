@@ -417,6 +417,13 @@ a.btn-primary,a.btn-ghost-wa{text-decoration:none;box-sizing:border-box}
 .track-bar input:focus{border-color:var(--gold-500);box-shadow:0 0 0 3px var(--gold-100)}
 .track-bar .btn-primary{width:auto;height:46px;padding:0 18px;border-radius:12px;flex:none}
 .track-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;max-width:760px}
+.thanks{max-width:640px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px}
+.thanks h1{margin:0 0 8px;font-size:32px}
+.thanks p{margin:0 0 20px;color:var(--ink-2);font-size:16px;line-height:1.5}
+.thanks-actions{display:flex;flex-wrap:wrap;gap:10px}
+.thanks-actions .btn-primary,.thanks-actions .btn-line{width:auto;height:48px;padding:0 18px}
+.btn-line{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;border:1.5px solid var(--line-2);background:#fff;color:var(--blue-800);font-weight:800;text-decoration:none}
+.btn-line:hover{border-color:var(--gold-500)}
 .back-link{display:inline-flex;margin-bottom:12px;font-weight:800;color:var(--blue-800);text-decoration:none}
 .order-pick{max-width:860px;display:flex;flex-direction:column;gap:10px}
 .order-pick h2{margin:0 0 4px;font-size:20px}
@@ -476,6 +483,8 @@ a.btn-primary,a.btn-ghost-wa{text-decoration:none;box-sizing:border-box}
   .order-pick a{align-items:flex-start}
   .miss-search{flex-wrap:wrap}
   .miss-search .btn-primary{width:100%}
+  .thanks-actions{flex-direction:column}
+  .thanks-actions .btn-primary,.thanks-actions .btn-line{width:100%}
 }
 .occ-chip[aria-current="page"]{background:var(--gold-100);border-color:var(--gold-500);color:var(--gold-700)}
 a.achip{text-decoration:none}

@@ -143,7 +143,12 @@ export function CartChrome() {
                 onBusy={onBusy}
                 onSent={(result) => {
                   cart.clear();
-                  router.push(`/track?phone=${encodeURIComponent(result.phone)}`);
+                  const digits = result.phone.replace(/\D/g, "");
+                  const phone = digits.length > 10 ? digits.slice(-10) : digits;
+                  const params = new URLSearchParams();
+                  if (phone) params.set("phone", phone);
+                  if (result.number) params.set("number", result.number);
+                  router.push(`/thanks?${params.toString()}`);
                 }}
               />
             </>
