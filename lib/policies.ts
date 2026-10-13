@@ -69,7 +69,10 @@ export const POLICIES: Policy[] = [
               "To keep tax and order records we are required to hold.",
             ],
           },
-          { type: "p", text: "We do not sell your details. We do not use them for advertising." },
+          {
+            type: "p",
+            text: "Google Analytics counts visits to this website. It does not receive the name, phone number, email or gift list on a quote. We do not sell your details, and we do not use them for advertising.",
+          },
         ],
       },
       {
@@ -87,14 +90,14 @@ export const POLICIES: Policy[] = [
     slug: "cookies",
     nav: "Cookies",
     title: "Cookie policy",
-    description: "Aamaira Gifts does not use advertising or analytics cookies. The quote list is stored in your browser.",
+    description: "Google Analytics measures visits. The quote list stays in your browser. Aamaira Gifts does not use advertising cookies.",
     sections: [
       {
-        heading: "No tracking cookies",
+        heading: "Analytics",
         blocks: [
           {
             type: "p",
-            text: `This website does not set advertising cookies or analytics cookies. Updated ${updated}.`,
+            text: `Google Analytics 4 measures visits to this website: pages opened, and general device and location information. It sets its own cookies for that. It does not receive your name, phone number, email or quote list. We do not use advertising cookies. Updated ${updated}.`,
           },
         ],
       },

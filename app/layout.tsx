@@ -3,6 +3,7 @@ import { Figtree } from "next/font/google";
 import { Suspense } from "react";
 import { CartChrome } from "@/components/cart-chrome";
 import { CartProvider } from "@/components/cart-provider";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { JsonLd } from "@/components/json-ld";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { SiteFooter } from "@/components/site-footer";
@@ -82,6 +83,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Suspense>
           <CartChrome />
         </CartProvider>
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
       </body>
     </html>
   );

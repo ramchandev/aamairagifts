@@ -98,7 +98,9 @@ export async function POST(request: Request) {
         { status: 502 },
       );
     }
-    await rememberOrder(phone, token, order.number);
+    // The quote is already saved in COFOLO at this point, so a failure to note it down for "find my quote by phone" must never turn into an
+    // error for the customer. (On Vercel the disk is read-only, so this file write fails there: the lookup needs a real store.)
+    try { await rememberOrder(phone, token, order.number); } catch (error) { console.error("Could not remember the order for the phone lookup", error); }
     return NextResponse.json({
       token,
       number: order.number,
