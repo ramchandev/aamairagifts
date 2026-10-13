@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   agentRules: false,
   cacheComponents: true,
   partialPrefetching: true,
+  async redirects() {
+    return [{ source: "/track/:token", destination: "/order/:token", permanent: false }];
+  },
   turbopack: {
     root: process.cwd(),
   },
