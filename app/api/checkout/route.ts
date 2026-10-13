@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { CofoloError, placeOrder } from "@/lib/cofolo";
-import { rememberOrder } from "@/lib/order-index";
+import { rememberOnResponse, rememberOrder } from "@/lib/order-index";
 import type { PlaceOrderInput } from "@/lib/types";
 
 interface CheckoutBody {
@@ -31,7 +31,7 @@ function addressFrom(place: string): PlaceOrderInput["shippingAddress"] | undefi
   return { line1: line, line2: "", city: line, postalCode, country: "India" };
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   let payload: CheckoutBody;
   try {
     payload = (await request.json()) as CheckoutBody;
@@ -98,15 +98,18 @@ export async function POST(request: Request) {
         { status: 502 },
       );
     }
-    // The quote is already saved in COFOLO at this point, so a failure to note it down for "find my quote by phone" must never turn into an
-    // error for the customer. (On Vercel the disk is read-only, so this file write fails there: the lookup needs a real store.)
-    try { await rememberOrder(phone, token, order.number); } catch (error) { console.error("Could not remember the order for the phone lookup", error); }
-    return NextResponse.json({
+    try {
+      await rememberOrder(phone, token, order.number);
+    } catch (error) {
+      console.error("Could not remember the order for the phone lookup", error);
+    }
+    const response = NextResponse.json({
       token,
       number: order.number,
       needsPricing: order.needsPricing,
       status: order.status,
     });
+    return rememberOnResponse(response, request.cookies.get("aamaira-orders")?.value, phone, token, order.number);
   } catch (error) {
     if (error instanceof CofoloError) {
       return NextResponse.json(
