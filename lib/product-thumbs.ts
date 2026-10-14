@@ -16,6 +16,7 @@ export async function productThumbs() {
       if (!image?.url) continue;
       const thumb = { url: image.url, alt: image.alt || product.name };
       map.set(product.id, thumb);
+      map.set(product.name, thumb);
       if (product.sku) map.set(product.sku, thumb);
     }
     if (!result.hasMore) break;

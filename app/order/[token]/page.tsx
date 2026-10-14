@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { OrderView } from "@/components/order-view";
 import { TrackForm } from "@/components/track-form";
 import { CofoloError, trackOrder } from "@/lib/cofolo";
+import { rememberOrder } from "@/lib/order-index";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -68,5 +69,12 @@ async function Ordered({ params, searchParams }: { params: Promise<{ token: stri
     );
   }
   if (!order) notFound();
+  if (order.customer.phone && /^[a-f0-9]{32,128}$/i.test(token)) {
+    try {
+      await rememberOrder(order.customer.phone, token, order.number);
+    } catch (error) {
+      console.error("Could not attach this order to its phone number", error instanceof Error ? error.name : "error");
+    }
+  }
   return <OrderView order={order} backHref={backHref} token={token} />;
 }

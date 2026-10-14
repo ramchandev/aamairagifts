@@ -44,10 +44,10 @@ async function Tracker({ searchParams }: { searchParams: Promise<{ phone?: strin
     );
   }
 
-  let orders: Awaited<ReturnType<typeof ordersForPhone>> = [];
+  let found: Awaited<ReturnType<typeof ordersForPhone>> = { orders: [], hasMore: false };
   let problem = "";
   try {
-    orders = await ordersForPhone(phone);
+    found = await ordersForPhone(phone);
   } catch (error) {
     problem = error instanceof CofoloError ? error.message : "Could not load the orders. Please try again.";
   }
@@ -58,12 +58,12 @@ async function Tracker({ searchParams }: { searchParams: Promise<{ phone?: strin
         <div className="form-errors" role="alert" style={{ maxWidth: 640 }}>
           <p>{problem}</p>
         </div>
-      ) : orders.length === 0 ? (
+      ) : found.orders.length === 0 ? (
         <div className="form-errors" role="alert" style={{ maxWidth: 760 }}>
           <p>No orders placed on this website were found for this phone number.</p>
         </div>
       ) : (
-        <OrderList orders={orders} phone={phone} />
+        <OrderList orders={found.orders} phone={digits} hasMore={found.hasMore} />
       )}
     </>
   );

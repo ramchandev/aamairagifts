@@ -131,6 +131,31 @@ export interface TrackResult {
   statusLabels?: Partial<Record<OrderStatus, string>>;
 }
 
+export interface ListedOrderItem {
+  name: string;
+  quantity: number;
+  unit: string;
+}
+
+export interface ListedOrder {
+  token: string;
+  number: string;
+  status: OrderStatus;
+  statusLabel: string;
+  needsPricing: boolean;
+  currency: string;
+  placedAt: string;
+  total: Money | null;
+  itemCount: number;
+  items: ListedOrderItem[];
+  shipment: Order["shipment"];
+}
+
+export interface PhoneOrderList {
+  orders: ListedOrder[];
+  hasMore: boolean;
+}
+
 export interface PlaceOrderInput {
   customer: { name: string; email?: string; phone?: string; company?: string };
   shippingAddress?: Order["shippingAddress"];

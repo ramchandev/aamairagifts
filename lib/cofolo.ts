@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Catalog, Order, PlaceOrderInput, Product, ProductList, TrackResult } from "@/lib/types";
+import type { Catalog, Order, PhoneOrderList, PlaceOrderInput, Product, ProductList, TrackResult } from "@/lib/types";
 
 const REVALIDATE_SECONDS = 60;
 
@@ -94,6 +94,11 @@ export function placeOrder(order: PlaceOrderInput, idempotencyKey: string) {
     headers: { "Idempotency-Key": idempotencyKey, "content-type": "application/json" },
     cache: "no-store",
   });
+}
+
+export function listOrdersByPhone(phone: string) {
+  const search = new URLSearchParams({ phone });
+  return call<PhoneOrderList>(`/orders?${search.toString()}`, { cache: "no-store" });
 }
 
 export function trackOrder(id: string) {

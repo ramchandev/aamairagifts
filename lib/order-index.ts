@@ -3,15 +3,13 @@ import { cookies } from "next/headers";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import type { NextResponse } from "next/server";
+import { addToDirectory, directoryOrders, type IndexedOrder } from "@/lib/order-directory";
+
+export type { IndexedOrder };
 
 const file = path.join(process.cwd(), "data", "order-index.json");
 const COOKIE = "aamaira-orders";
-const MAX_REMEMBERED = 30;
-
-export interface IndexedOrder {
-  token: string;
-  number: string;
-}
+const MAX_REMEMBERED = 8;
 
 interface RememberedOrder extends IndexedOrder {
   phone: string;
@@ -70,34 +68,60 @@ async function readIndex(): Promise<Record<string, IndexedOrder[]>> {
 
 export async function rememberOrder(phone: string, token: string, number: string) {
   const key = phoneKey(phone);
-  if (key.length < 10 || !token) return;
-  const all = await readIndex();
-  const list = all[key] ?? [];
-  if (list.some((entry) => entry.token === token)) return;
-  all[key] = [...list, { token, number }];
-  await mkdir(path.dirname(file), { recursive: true });
-  await writeFile(file, JSON.stringify(all, null, 2));
+  if (key.length < 10 || !/^[a-f0-9]{32,128}$/i.test(token) || !number) return;
+  try {
+    const all = await readIndex();
+    const list = all[key] ?? [];
+    if (!list.some((entry) => entry.token === token)) {
+      all[key] = [...list, { token, number }];
+      await mkdir(path.dirname(file), { recursive: true });
+      await writeFile(file, JSON.stringify(all, null, 2));
+    }
+  } catch (error) {
+    console.error("Could not write the local order index", error instanceof Error ? error.name : "error");
+  }
+  try {
+    await addToDirectory(key, [{ token, number }]);
+  } catch (error) {
+    console.error("Could not save the shared phone directory", error instanceof Error ? error.name : "error");
+  }
+}
+
+async function browserOrders(phone: string) {
+  try {
+    const jar = await cookies();
+    return rememberedOrders(jar.get(COOKIE)?.value)
+      .filter((row) => row.phone === phone)
+      .map(({ token, number }) => ({ token, number }));
+  } catch {
+    return [];
+  }
 }
 
 export async function tokensForPhone(phone: string) {
   const key = phoneKey(phone);
   if (key.length < 10) return [];
-  const fromFile = (await readIndex())[key] ?? [];
-  let fromBrowser: IndexedOrder[] = [];
-  try {
-    const jar = await cookies();
-    fromBrowser = rememberedOrders(jar.get(COOKIE)?.value)
-      .filter((row) => row.phone === key)
-      .map(({ token, number }) => ({ token, number }));
-  } catch {
-    fromBrowser = [];
-  }
+  const [fromDirectory, fromFile, fromBrowser] = await Promise.all([
+    directoryOrders(key),
+    readIndex().then((all) => all[key] ?? []),
+    browserOrders(key),
+  ]);
   const seen = new Set<string>();
   const merged: IndexedOrder[] = [];
-  for (const entry of [...fromBrowser, ...fromFile]) {
-    if (seen.has(entry.token)) continue;
-    seen.add(entry.token);
+  for (const entry of [...fromDirectory, ...fromBrowser, ...fromFile]) {
+    const id = entry.token.toLowerCase();
+    if (seen.has(id)) continue;
+    seen.add(id);
     merged.push(entry);
+  }
+  const known = new Set(fromDirectory.map((entry) => entry.token.toLowerCase()));
+  const missing = merged.filter((entry) => !known.has(entry.token.toLowerCase()));
+  if (missing.length > 0) {
+    try {
+      await addToDirectory(key, missing);
+    } catch (error) {
+      console.error("Could not update the phone directory", error instanceof Error ? error.name : "error");
+    }
   }
   return merged;
 }
